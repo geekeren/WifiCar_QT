@@ -12,15 +12,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     //显示图片
     QPixmap pixmap(":/shot");
-
     ui->label->setPixmap(pixmap);
     ui->label->setScaledContents(true);
     ui->label->resize(ui->label->width(),ui->label->height());
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(setNetworkPic())); // ***就是你所说的响应函数
-    timer->start(80); // 每隔80ms
-
-
+    timer->start(100); // 每隔100ms
 }
 
 MainWindow::~MainWindow()
@@ -30,7 +27,20 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
+sendCmd("a");
 
+
+}
+void MainWindow::sendCmd(QByteArray datagram){
+    QTcpSocket  sender;
+
+    sender.connectToHost("192.168.8.1",2001);
+    sender.write(datagram.data(),datagram.length());
+    if(sender.waitForBytesWritten(500))
+       emit "successful";
+    else
+       emit sender.error();
+    sender.disconnect();
 }
 
 void MainWindow::setNetworkPic()
@@ -55,4 +65,24 @@ void MainWindow::setNetworkPic()
        ui->label->setPixmap(pixmap); // 你在QLabel显示图片
     }
 
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    sendCmd("c");
+}
+
+void MainWindow::on_pushButton_4_clicked()
+{
+     sendCmd("d");
+}
+
+void MainWindow::on_pushButton_3_clicked()
+{
+     sendCmd("b");
+}
+
+void MainWindow::on_pushButton_5_clicked()
+{
+     sendCmd("e");
 }
